@@ -2,8 +2,6 @@ require 'term/ansicolor'
 require "pp"
 require "set"
 
-include Term::ANSIColor
-
 class Array
   def duplicates
     seen = {}
@@ -16,15 +14,19 @@ class Array
     end
     rv.sort
   end
+
+  def stats
+    rv = Hash.new(0)
+    each do |c|
+      rv[c] += 1
+    end
+    rv.sort_by{|k,v| -v}
+  end
 end
 
 class String
   def stats
-    rv = Hash.new(0)
-    split('').each do |c|
-      rv[c] += 1
-    end
-    rv.sort_by{|k,v| -v}
+    split('').stats
   end
 end
 
@@ -32,9 +34,9 @@ def dec(txt, from, to)
   txt.gsub(/./) do
     i = from.index($&)
     if i
-      green(to[i])
+      Term::ANSIColor.green(to[i])
     else
-      red($&)
+      Term::ANSIColor.red($&)
     end
   end
 end

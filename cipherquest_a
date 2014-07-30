@@ -8,7 +8,7 @@ from = "BxqfrtvhmgozpyjsldakiAncweu"
 to   = " theowav.ricnbykmslgudpxfjz"
 
 ciphertext.stats.each{|c,s|
-  puts "#{red(c)} #{dec(c, from, to)} #{s}"
+  puts "#{Term::ANSIColor.red(c)} #{dec(c, from, to)} #{s}"
 }
 
 puts dec(ciphertext, from, to)
