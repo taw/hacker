@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+require_relative "cipherquest"
+
+ciphertext = "fmpmfpmpp mmmpppfmmfppmpppff fmpppf pmfmffmpfmpp, fmpmfpmpp fmfpppmfffpmmpppfffmmmpp, mmmpppmpm mppfpmmpppffffmfmpmfpmffpppmfm mfffmm mpfppfpfffmpffmfmpfppppf"
+
+translation = {
+  "fmp" => "t",
+  "mfp" => "h",
+  "mpp" => "e",
+  "mmm" => "a",
+  "ppp" => "n",
+  "fmm" => "s",
+  "fpp" => "w",
+  "pff" => "r",
+  "ppf" => "o",
+  "mpm" => "d",
+  "pmf" => "l",
+  "mff" => "i",
+  "mpf" => "f",
+  "fmf" => "u",
+  "fpm" => "v",
+  "ffm" => "y",
+  "mfm" => "g",
+}
+
+pp ciphertext.scan(/[fmp]{3}/).stats
+
+out = ciphertext.gsub(/[fmp]{3}/) do
+  i = translation[$&]
+  if i
+    Term::ANSIColor.green(i)
+  else
+    Term::ANSIColor.red($&)
+  end
+end
+
+puts out
