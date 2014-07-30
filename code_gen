@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+
+class HVMCodeGen
+  attr_reader :code
+  def initialize
+    @code = ""
+  end
+
+  def push(c)
+    @code << c
+  end
+
+  def dup
+    push "0^"
+  end
+
+  def push_number(n)
+    if n <= 9
+      @code << n.to_s
+    else
+      d = n / 9
+      r = n % 9
+      if d == 1
+        push "9"
+      else
+        push_number(d)
+        push "9*"
+      end
+      if r != 0
+        push "#{r}+"
+      end
+    end
+  end
+
+  def print_char(c)
+    push_number c.ord
+    push "P "
+  end
+
+  def print_str(s)
+    s.split(//).each do |c|
+      print_char(c)
+    end
+  end
+
+  def load_mem(i)
+    push_number(i)
+    push "<"
+  end
+
+  def king_rat_step(i)
+    load_mem i
+    push_number (i+1)
+
+    load_mem i
+    load_mem (i+1)
+    push ":"
+    push_number 1
+    push ":"
+    push "1+"
+    push "1?"
+    push ">"
+  end
+
+  def king_rat
+    (0..18).each do |i|
+      king_rat_step(i)
+    end
+    load_mem 19
+    push "p"
+  end
+end
+
+codegen = HVMCodeGen.new
+# codegen.print_str "Hello, World"
+codegen.king_rat
+puts codegen.code
