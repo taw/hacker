@@ -68,7 +68,7 @@ class SuperhackThread
   end
 
   def step!
-    # puts "Executing <#{@x}, #{@y}>: `#{current_opcode}' `#{@machine.output}' `#{@callstack.inspect}'"
+    puts "Executing <#{@x},#{@y},#{@dir}>: `#{current_opcode}' `#{@stack.inspect}'' `#{@machine.output}' `#{@callstack.inspect}'"
     case current_opcode
     when "%"
       raise "NotImplemented"
@@ -83,25 +83,35 @@ class SuperhackThread
     when "!"
       @alive = false
     when "+"
-      b,a=pop,pop
+      a,b=pop,pop
       push b+a
     when "-"
-      b,a=pop,pop
+      a,b=pop,pop
       push b-a
     when "*"
-      b,a=pop,pop
+      a,b=pop,pop
       push b*a
-    when "/"
-      b,a=pop,pop
+    when "d"
+      a,b=pop,pop
       push b/a
     when ","
       push @machine.read
     when "s"
       move!
     when "\\"
-      turn! 1
+      @dir = {
+         left: :up,
+           up: :left,
+        right: :down,
+         down: :right,
+      }[@dir]
     when "/"
-      turn! -1
+      @dir = {
+        right: :up,
+           up: :right,
+         left: :down,
+         down: :left,
+      }[@dir]
     when ":"
       raise "NotImplemented"
     when "?"
@@ -140,7 +150,7 @@ class SuperhackThread
       y=pop
       @machine.write_opcode(x, y, pop)
     # All unknown characters are noops, but for now whitelist them
-    when '|'
+    when '|', '='
       # noop
     else
       raise "Unknown opcode `#{current_opcode}'"

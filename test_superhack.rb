@@ -32,7 +32,7 @@ class TestSuperhack < Minitest::Test
           x  |
           \-=/
       ',
-      output: 876543210
+      output: "876543210"
     )
   end
 
