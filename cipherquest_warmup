@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require "pp"
+
+class String
+  def stats
+    rv = Hash.new(0)
+    split('').each do |c|
+      rv[c] += 1
+    end
+    rv.sort_by{|k,v| -v}
+  end
+end
+
+data = "tulgqBmqBvuqbdhpslBtuclBmpBjpBfuzclstBjgsCBuztBxhtjBmpBvpfgzepBjpBbpctBdpgccqBehfk.BhBxpstBtuBjheBjuzepBgsqxgqBtuBezdodhepBjhmBxhtjBjumpmglpBeuzo.BhBxgckBhsBtuBjheBduumBuscqBtuBbhslBjhmBjuukhsCBzoBxhtjBmqBehetpd.BejpBfgstBldhap.BuzdBmumBlduapBjpdBtjpdp.Bbmc"
+data = data.tr("BC", " ,").upcase
+
+data = data.tr(
+  "PUTJEDZXSMGLHOQVBCFAK",
+  "eothsruwnmadipybflcvk",
+)
+
+pp data.stats
+puts data
+
+puts data[0,25]
