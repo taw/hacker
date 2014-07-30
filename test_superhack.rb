@@ -9,7 +9,7 @@ class TestSuperhack < Minitest::Test
     init_spaces = code[0][/\A\s*/]
     code.map do |line|
       if line[0, init_spaces.size] == init_spaces
-        line[init_spaces.size..-1]
+        line[init_spaces.size..-1].split("")
       else
         require 'pry'; binding.pry
       end
@@ -26,12 +26,12 @@ class TestSuperhack < Minitest::Test
   def test_1
     assert_superhack(
       code:
-      "
+      '
         9s/x?\!
           p  1
           x  |
           \-=/
-      ",
+      ',
       output: 876543210
     )
   end
@@ -39,7 +39,7 @@ class TestSuperhack < Minitest::Test
   def test_2
     assert_superhack(
       code:
-      "
+      '
         2@\!
           @
           @
@@ -50,7 +50,7 @@ class TestSuperhack < Minitest::Test
           g
           P
           $
-      ",
+      ',
       output: "@@@@@"
     )
   end
@@ -58,14 +58,14 @@ class TestSuperhack < Minitest::Test
   def test_3
     assert_superhack(
       code:
-      "
+      '
       9&\0000@\!
         s  /\ @
        /\  || @
        p7  || @
        \/  || |
       $====/\=/
-      ",
+      ',
       output: "7777777777777777"
     )
   end
