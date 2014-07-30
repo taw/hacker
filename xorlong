@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require "pp"
+require "set"
+
+def guess_key(raw)
+  (0..255).select{|k|
+    raw.map{|b| (k^b).chr}.all?{|t| t =~ /[a-zA-Z. 0-9,!?]/}
+  }
+end
+
+data = "8776459cf37d459fbb7b5ecfbb7f5fcfb23e478aaa3e4389f378439aa13e4e96a77b5fc1f358439df36a4486a03e4381b63e5580a66c0c8ebd6d5b8aa13e459cf34e4d9fa67f02cf90714288a17f589abf7f5886bc705fcfbc700c96bc6b5ecfb7775f8cbc68499daa3f"
+
+data = data.scan(/../).map{|x| x.to_i(16)}
+pp data.size
+
+ax = Set[]
+bx = Set[]
+cx = Set[]
+dx = Set[]
+
+data.each_slice(4){|a,b,c,d|
+  ax << a if a
+  bx << b if b
+  cx << c if c
+  dx << d if d
+}
+
+ak = guess_key(ax)
+bk = guess_key(bx)
+ck = guess_key(cx)
+dk = guess_key(dx)
+
+p ak
+p bk
+p ck
+p dk
+
+out = ""
+data.each_slice(4){|a,b,c,d|
+  out << (a^211).chr if a
+  out << (b^ 30).chr if b
+  out << (c^ 44).chr if c
+  out << (d^239).chr if d
+}
+
+puts out
