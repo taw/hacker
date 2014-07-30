@@ -15,6 +15,14 @@ class SuperhackThread
     @callstack = []
   end
 
+  def pc
+    [@x, @y, @dir]
+  end
+
+  def pc=(new_pc)
+    @x, @y, @dir = *new_pc
+  end
+
   def dx
     case @dir
     when :right
@@ -68,7 +76,7 @@ class SuperhackThread
   end
 
   def step!
-    puts "Executing <#{@x},#{@y},#{@dir}>: `#{current_opcode}' `#{@stack.inspect}'' `#{@machine.output}' `#{@callstack.inspect}'"
+    # puts "<#{object_id}>: <#{@x},#{@y},#{@dir}>: `#{current_opcode}' `#{@stack.inspect}'' `#{@machine.output}' `#{@callstack.inspect}'"
     case current_opcode
     when "%"
       raise "NotImplemented"
@@ -117,9 +125,9 @@ class SuperhackThread
     when "?"
       move! if pop == 0
     when '@'
-      @callstack.push [@x, @y, @dir]
+      @callstack.push pc
     when '$'
-      @x, @y, @dir = @callstack.pop
+      self.pc = @callstack.pop
       move!
     when '<'
       push memory_read(pop, pop)
@@ -150,6 +158,10 @@ class SuperhackThread
       y=pop
       @machine.write_opcode(x, y, pop)
     # All unknown characters are noops, but for now whitelist them
+    when '&'
+      move!
+      child_thread = @machine.new_thread!
+      child_thread.pc = pc
     when '|', '='
       # noop
     else
@@ -176,15 +188,21 @@ class Superhack
     @code[x][y] = val
   end
 
+  def new_thread!
+    thr = SuperhackThread.new(self)
+    @threads << thr
+    thr
+  end
 
   def initialize
     @output  = ""
-    @threads = [SuperhackThread.new(self)]
+    @threads = []
   end
 
   def run!
-    while @threads.any?(&:alive?)
-      @threads.each do |thr|
+    new_thread!
+    while @threads.all?(&:alive?)
+      @threads.dup.each do |thr|
         thr.step!
       end
     end
