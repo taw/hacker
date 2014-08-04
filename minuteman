@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require "open-uri"
+require "moneta"
+require "yaml"
+
+url = "http://www.hacker.org/challenge/misc/minuteman.php"
+cache = Moneta.new(:YAML, file: 'minuteman.yaml')
+
+loop do
+  cache[Time.now.to_s] = (open(url).read rescue "FAIL")
+  sleep 30
+end
