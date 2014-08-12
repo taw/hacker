@@ -91,11 +91,16 @@ class HVMCodeGen
     # 2:
     shift_right_one_bit(0)
     shift_right_one_bit(1)
-    push "01^3^2**-++"
+    push "0"   # x y 0
+    push "1^"  # x y 0 y
+    push "3^"  # x y 0 y x
+    push "2**" # x y 0 (y*x*2)
+    push "-"   # x y (-2*y*x)
+    push "++"  # (x+y-2*y*x)
+
     push "1^*"   # sum, pow2, part
     push "2v+"   # pow2, sum+part
     push "1v0^+" # sum+part, pow2*2
-
   end
 end
 
