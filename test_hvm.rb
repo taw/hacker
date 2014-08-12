@@ -57,6 +57,42 @@ class TestHVM < Minitest::Test
     hvm.run!
     assert_equal "6", hvm.output
   end
+
+  def test_xor_one_bit
+    [
+      # [7, 9],
+      [0, 0],
+      [0, 1],
+      [1, 0],
+      [1, 1],
+    ].each do |a,b|
+      puts ""
+      hvm = HVM.new
+      hvm.push a
+      hvm.push b
+      hvm.code = "01^3^2**-++p"
+      hvm.run!
+      assert_equal "#{a^b}", hvm.output
+    end
+  end
+
+  def test_xor_all
+    [
+      [0, 0],
+      [0, 1],
+      [1, 2],
+      [42, 9],
+      [117, 97],
+      [174, 42],
+      [255, 256],
+      [88, 972],
+    ].each do |a,b|
+      hvm = HVM.new
+      hvm.mem[0] = a
+      hvm.mem[1] = b
+      hvm.code = "01" + "0<0^2/0^0>2*-1<0^2/0^1>2*-01^3^2**-++1^*2v+1v0^+"  * 31 + "dp"
+      hvm.run!
+      assert_equal "#{a^b}", hvm.output
+    end
+  end
 end
-
-

@@ -48,6 +48,11 @@ class HVMCodeGen
     push "<"
   end
 
+  def save_mem(i)
+    push_number(i)
+    push ">"
+  end
+
   def king_rat_step(i)
     load_mem i
     push_number (i+1)
@@ -69,9 +74,32 @@ class HVMCodeGen
     load_mem 19
     push "p"
   end
+
+  def shift_right_one_bit(i)
+    load_mem(i)   # a
+    dup           # a a
+    push "2/"     # a (a/2)
+    dup           # a (a/2) (a/2)
+    save_mem(i)   # a (a/2)
+    push "2*"     # a (a/2*2)
+    push "-"      # a[0]
+  end
+
+  def xor
+    push "0"
+    push "1"
+    # 2:
+    shift_right_one_bit(0)
+    shift_right_one_bit(1)
+    push "01^3^2**-++"
+    push "1^*"   # sum, pow2, part
+    push "2v+"   # pow2, sum+part
+    push "1v0^+" # sum+part, pow2*2
+
+  end
 end
 
 codegen = HVMCodeGen.new
 # codegen.print_str "Hello, World"
-codegen.king_rat
+codegen.xor
 puts codegen.code

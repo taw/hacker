@@ -28,7 +28,7 @@ class HVM
 
   def step!
     command = @code[@pc]
-    puts "Running `#{command}' #{@pc} - #{@stack.inspect}"
+    puts "Running `#{command}' #{@pc} - #{@stack.inspect} - #{@mem[0,4].map(&:inspect)}"
     @pc += 1
     case command
     when ' '
