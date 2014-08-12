@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+
+include Math
+
+def D(n)
+  (1..n).map{|k|
+    (2*k-1)
+  }.inject(1, &:*)
+end
+
+# @logd = {}
+# def log2_D(n)
+#   @logd[n] ||= begin
+#     (1..n).map{|k|
+#       log2(2*k-1)
+#     }.inject(0, &:+)
+#   end
+# end
+
+@logd = { 0 => 1 }
+def log2_D(n)
+  @logd[n] ||= log2(2*n-1) + log2_D(n-1)
+end
+
+def N(n)
+  return 1 if n == 0
+  raise "WTF" if n < 0
+  7*D(n-2) + N(n-2)*(4*n*n-8*n+3)
+end
+
+def magic(a,b)
+  c = [a,b].min
+  d = [a,b].max - c
+  c + log2((2**0) + (2**d))
+end
+
+@logn = {0 => 1}
+def log2_N(n)
+  @logn[n] ||= begin
+    magic(
+      log2_N(n-2) + log2(4*n*n-8*n+3),
+      log2(7) + log2_D(n-2)
+    )
+  end
+end
+
+b = 1_000_000
+
+(1..4*b).each{|i| log2_D(i)}
+(1..2*b).each{|i| log2_N(2*i)}
+
+puts log2_D(4*b)
+puts log2_N(4*b)
+puts 2**(log2_N(4*b)-log2_D(4*b))
+
+__END__
+
+# b = 1_000_000 | _000_000
+
+3.748883150843 8807
+3.748872444480 159
+  ^^^^
+1 000000000000
+
+phi(n) = D(n)/N(n) and solve that iteratively
