@@ -60,7 +60,6 @@ class TestHVM < Minitest::Test
 
   def test_xor_one_bit
     [
-      # [7, 9],
       [0, 0],
       [0, 1],
       [1, 0],
@@ -115,6 +114,18 @@ class TestHVM < Minitest::Test
       hvm.code = "0<1</4?0<p!1<p"
       hvm.run!
       assert_equal [a,b].max.to_s, hvm.output
+    end
+  end
+
+  def test_broken_keys
+    (1..100).each do |a|
+      (1..100).each do |b|
+        assert_equal [a,b].max, (1/((a+b)/b))*b + (1/((a+b-1)/a))*a
+        hvm = HVM.new
+        hvm.mem[0,1] = [a,b]
+        hvm.code = "10<1<+1<//1<*10<1<+1-0<//0<*+p"
+        hvm.run!
+      end
     end
   end
 end

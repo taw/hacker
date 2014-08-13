@@ -103,9 +103,9 @@ class HVMCodeGen
     push "1v0^+" # sum+part, pow2*2
   end
 
-  def find_dups
-    (0..11).each do |i|
-      (i+1..11).each do |j|
+  def find_dups(num=12)
+    (0...num).each do |i|
+      (i+1..num).each do |j|
         load_mem i
         dup
         load_mem j
@@ -124,9 +124,35 @@ class HVMCodeGen
     push "0<p!"
     push "1<p"
   end
+
+  def broken_keys
+    # (1/((a+b)/b))*b + (1/((a+b-1)/a))*a
+    push "1"
+    load_mem 0
+    load_mem 1
+    push "+"      # 1, (a+b)
+    load_mem 1
+    push "/"      # 1, (a+b)/b
+    push "/"      # (1/((a+b)/b))
+    load_mem 1
+    push "*"      # (1/((a+b)/b))*b
+
+    push "1"
+    load_mem 0
+    load_mem 1
+    push "+"
+    push "1-"     # 1, (a+b-1)
+    load_mem 0
+    push "/"      # 1, (a+b-1)/b
+    push "/"      # (1/((a+b-1)/a))
+    load_mem 0
+    push "*"      # (1/((a+b-1)/b))*a
+
+    push "+p"
+  end
 end
 
 codegen = HVMCodeGen.new
 # codegen.print_str "Hello, World"
-codegen.broken_key
+codegen.broken_keys
 puts codegen.code
