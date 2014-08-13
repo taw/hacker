@@ -115,9 +115,18 @@ class HVMCodeGen
       end
     end
   end
+
+  def broken_key
+    load_mem 0
+    load_mem 1
+    push "/"
+    push "4?"
+    push "0<p!"
+    push "1<p"
+  end
 end
 
 codegen = HVMCodeGen.new
 # codegen.print_str "Hello, World"
-codegen.find_dups
+codegen.broken_key
 puts codegen.code
