@@ -102,9 +102,22 @@ class HVMCodeGen
     push "2v+"   # pow2, sum+part
     push "1v0^+" # sum+part, pow2*2
   end
+
+  def find_dups
+    (0..11).each do |i|
+      (i+1..11).each do |j|
+        load_mem i
+        dup
+        load_mem j
+        push "-"
+        push "2?2g"
+        push "p!"
+      end
+    end
+  end
 end
 
 codegen = HVMCodeGen.new
 # codegen.print_str "Hello, World"
-codegen.xor
+codegen.find_dups
 puts codegen.code
