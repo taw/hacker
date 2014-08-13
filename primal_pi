@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require "gmp"
+
+digits = File.read("pi1000000.txt")[2,2048]
+
+# puts digits
+(250..2048).each do |digcnt|
+  puts "#{digcnt}:"
+  (0..digits.size).each do |x|
+    digs = digits[x, digcnt]
+    next unless digs.size == digcnt
+    z = GMP::Z(digs, 10)
+    puts z if z.probab_prime? != 0
+  end
+  puts ""
+end
