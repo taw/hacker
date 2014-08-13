@@ -125,6 +125,21 @@ class TestHVM < Minitest::Test
         hvm.mem[0,1] = [a,b]
         hvm.code = "10<1<+1<//1<*10<1<+1-0<//0<*+p"
         hvm.run!
+        assert_equal [a,b].max.to_s, hvm.output
+      end
+    end
+  end
+
+  def test_brokener_keys
+    (0..255).each do |a|
+      (0..255).each do |b|
+        p [a,b]
+        hvm = HVM.new
+        hvm.mem[0,1] = [a,b]
+        hvm.code = "0<1<888**0<1<--4*cp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         0<p!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            1<p!"
+        hvm.run!
+        assert_equal [a,b].max.to_s, hvm.output
+        # assert_equal (4*(256+b-a)).to_s, hvm.output
       end
     end
   end
