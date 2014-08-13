@@ -155,7 +155,6 @@ class HVMCodeGen
     load_mem 0
     load_mem 1
     push "888**0<1<--4*c"
-    push "p"
     (0..255).each do |a|
       (0..255).each do |b|
         addr = (4*(512+b-a))
@@ -169,9 +168,34 @@ class HVMCodeGen
       end
     end
   end
+
+  def overflow_minus_one
+    push_number(2**32-1)
+  end
+
+  def brokenest_keys
+    push "0"
+    push "0^1+" * 256
+    push "0<^"
+    push "1<+4*"
+    push_number 1200
+    push "+c"
+    (0..255).each do |a|
+      (0..255).each do |b|
+        addr = 1200 + 4*(256+b-a)
+        # puts [addr, a <=> b].join(' ')
+        @code += " " while @code.size < addr
+        if a > b
+          @code[addr, 8] = "0<p!" if a==255 and b == 254
+        else
+          @code[addr, 8] = "1<p!" if b==255 and a == 0
+        end
+      end
+    end
+  end
 end
 
 codegen = HVMCodeGen.new
 # codegen.print_str "Hello, World"
-codegen.brokener_keys
+codegen.brokenest_keys
 puts codegen.code
