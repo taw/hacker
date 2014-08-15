@@ -193,9 +193,37 @@ class HVMCodeGen
       end
     end
   end
+
+  def deja_vu
+    push_number 127
+    raise unless @code.size == 7
+    # LoopA:
+    push "0"      # STACK: counterA, coutnerB
+
+    raise unless @code.size == 8
+    # LoopB
+    push "0^<"    # STACK: counterA, counterB, [B]
+    push "2^<"    # STACK: counterA, counterB, [B] [A]
+    push ":"      # STACK: counterA, counterB, [B]<=>[A]
+    push "2?5g"   # if [A] != [B] jump to X:
+    push "0^<p!"  # if found dup, print it and quit
+
+    # X:
+    push "1+"     # counterB += 1
+    push "0^2^:"  # STACK:counterA, coutnerB, counterA<=>coutnerB
+
+    push "2?"
+    push "8c"     # if counterB < counterA goto LoopB
+
+    push "d"      # STACK: counterA
+    push "1-"     # counterA -= 1
+    push "7c"     # goto loopA
+
+    # do fun stuff
+  end
 end
 
 codegen = HVMCodeGen.new
 # codegen.print_str "Hello, World"
-codegen.brokenest_keys
+codegen.deja_vu
 puts codegen.code

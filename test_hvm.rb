@@ -157,4 +157,13 @@ class TestHVM < Minitest::Test
       end
     end
   end
+
+  def test_deja_vu
+    values = ([142] + (101..227).to_a).shuffle
+    hvm = HVM.new
+    hvm.mem[0,128] = values
+    hvm.code = "95+9*1+00^<2^<:2?5g0^<p!1+0^2^:2?8cd1-7c"
+    hvm.run!
+    assert_equal "142", hvm.output
+  end
 end
