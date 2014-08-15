@@ -225,15 +225,13 @@ class HVMCodeGen
   def king_mouse
     push "0"
     raise unless @code.size == 1
-    push "0^1+"  # A, A+1
-    push "1^<"   # A, A+1, [A]
-    push "1^<"   # A, A+1, [A], [A+1]
-    push ":"     # A, A+1, [A]<=>[A+1]
-    push "1+6?"  # jump forward if second already greater
-    push "1^<1^" # A, A+1, [A], A+1
-    push ">"     # mem[A+1] = mem[A]
-    push "0^45*/3?" # jump forward if A == 20
-    push "<p!"
+    push "1+"    # A+1
+    push "0^<0<" # A+1, [A+1], [0]
+    push ":"     # A+1, [A+1]<=>[0]
+    push "1+5?"  # jump forward if something
+    push "0^<0>"  # mem[0] = new max
+    push "0^45*/4?" # jump forward if A == 20
+    push "0<p!"
     push "1c"
     warn "Code size is: #{@code.size}"
   end
