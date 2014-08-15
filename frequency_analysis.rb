@@ -30,3 +30,16 @@ data = Pathname(audio_file).read.unpack("s*")
   analyze! part
 end
 
+# feed a bad beef
+# 350  F
+# 660  E
+# 330  E
+# 294  D
+# 220  A
+# 248  B
+# 439  A
+# 293  D
+# 249  B
+# 330  E
+# 660  E
+# 351  F
