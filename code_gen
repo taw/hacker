@@ -221,9 +221,25 @@ class HVMCodeGen
 
     # do fun stuff
   end
+
+  def king_mouse
+    push "0"
+    raise unless @code.size == 1
+    push "0^1+"  # A, A+1
+    push "1^<"   # A, A+1, [A]
+    push "1^<"   # A, A+1, [A], [A+1]
+    push ":"     # A, A+1, [A]<=>[A+1]
+    push "1+6?"  # jump forward if second already greater
+    push "1^<1^" # A, A+1, [A], A+1
+    push ">"     # mem[A+1] = mem[A]
+    push "0^45*:1+3?" # jump forward if A == 20
+    push "<p!"
+    push "1c"
+    warn "Code size is: #{@code.size}"
+  end
 end
 
 codegen = HVMCodeGen.new
 # codegen.print_str "Hello, World"
-codegen.deja_vu
+codegen.king_mouse
 puts codegen.code
