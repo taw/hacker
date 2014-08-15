@@ -16,8 +16,9 @@ class TestSuperhack < Minitest::Test
     end
   end
 
-  def assert_superhack(code: nil, output: nil)
+  def assert_superhack(code: nil, output: nil, input: nil)
     sh = Superhack.new
+    sh.input = input
     sh.code = cleanup_code(code)
     sh.run!
     assert_equal output, sh.output
@@ -67,6 +68,18 @@ class TestSuperhack < Minitest::Test
       $====/\=/
       ',
       output: "7777777777777777"
+    )
+  end
+
+  def test_string_reversal
+    assert_superhack(
+      code:
+      '
+      0s/,0^?\ + s/0^?\ !
+        \    /    \P  /
+      ',
+      input: 'hello',
+      output: 'olleh'
     )
   end
 end

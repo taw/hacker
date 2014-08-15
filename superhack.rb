@@ -146,9 +146,14 @@ class SuperhackThread
       push a
       push a
     when '^'
-      raise "NotImplementedYet"
+      where = pop
+      push @stack[-1-where]
     when 'v'
-      raise "NotImplementedYet"
+      where = pop
+      v = @stack[-1-where]
+      @stack[-1-where] = nil
+      @stack.compact!
+      push v
     when 'g'
       x=pop
       y=pop
@@ -162,7 +167,7 @@ class SuperhackThread
       move!
       child_thread = @machine.new_thread!
       child_thread.pc = pc
-    when '|', '='
+    when '|', '=', ' '
       # noop
     else
       raise "Unknown opcode `#{current_opcode}'"
@@ -174,6 +179,10 @@ end
 class Superhack
   attr_accessor :code
   attr_accessor :output
+
+  def input=(text)
+    @input = text.split(//).map(&:ord) if text
+  end
 
   def print(str)
     @output << str
@@ -194,8 +203,13 @@ class Superhack
     thr
   end
 
+  def read
+    @input.shift || 0
+  end
+
   def initialize
     @output  = ""
+    @input   = ""
     @threads = []
   end
 
