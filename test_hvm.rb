@@ -170,7 +170,7 @@ class TestHVM < Minitest::Test
   def test_king_mouse
     hvm = HVM.new
     hvm.mem[0,19] = [209, 205, 202, 207, 219, 217, 201, 214, 210, 212, 211, 215, 218, 203, 204, 200, 206, 213, 208, 216].map{|x| x-210}
-    hvm.code = "45*1-0^<0<:1+5?0^<0>0^2?3g<p!3c"
+    hvm.code = "45*1-0^<0<:1+5?0^<0>0^2?3c<p"
     hvm.run!
 
     assert_equal "9", hvm.output

@@ -230,9 +230,8 @@ class HVMCodeGen
     push ":1+"    # A-1, [A-1]<=>[0]
     push "5?"     # jump forward if something
     push "0^<0>"  # mem[0] = new max
-    push "0^2?3g" # jump forward if A != 0
-    push "<p!"
-    push "3c"
+    push "0^2?3c" # jump forward if A != 0
+    push "<p"
     warn "Code size is: #{@code.size}"
   end
 end
