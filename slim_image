@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+data = open("picnic.bmp").read
+
+ofs = data[10,4].unpack("V")[0]
+xsz = data[18,4].unpack("V")[0]
+ysz = data[22,4].unpack("V")[0]
+
+p [xsz, ysz]
+bitdata = data[ofs..-1]
+
+pixels = bitdata.unpack("C*").map{|x| "%08b" % x}.join.scan(/.{7}/).map{|x|x.to_i(2)}
+
+open("picnic.pnm", "w") do |fh|
+  fh.print "P5\n#{xsz} #{ysz}\n255\n"
+  fh.print pixels.pack("C*")
+end
