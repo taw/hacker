@@ -1,25 +1,28 @@
 #!/usr/bin/env ruby
 
+require "pp"
+
+class Integer
+  def u32
+    [self].pack("V").unpack("V")[0]
+  end
+  def i32
+    [self].pack("V").unpack("l")[0]
+  end
+end
+
 def onetest(a)
-  # mov    %eax,%edx
-  d = a
-  # sar    $0x1f,%edx
-  d = d >> 0x1f
-  # not    %edx
-  d = 0xFFFF_FFFF ^ d
-  # and    %eax,%edx
-  d &= a
+  return -1319395901 if a < 0
   # sub    $0x6fe5d5,%edx
-  d -= 0x006f_e5d5
+  a -= 0x006f_e5d5
   # xor    $0x2eb22189,%edx
-  d ^= 0x2eb22189
+  a ^= 0x2eb22189
   # imul   $0x1534162,%edx,%edx
-  ad = d * 0x0153_4162 # This is not correct :-/
-  d = ad & 0xFFFF_FFFF
+  a *= 0x0153_4162
   # xor    $0x69f6bc7,%edx
-  d ^= 0x069f_6bc7
+  a ^= 0x069f_6bc7
   # mov    %edx,0x4(%esp)
-  return [d].pack("V").unpack("l")[0]
+  return a.i32
 end
 
 def test!
@@ -33,10 +36,12 @@ def test!
     -123456789 => -1319395901,
     42 => 37662207,
   }.each do |n,v|
-    unless onetest(n) == v
-      warn "Selftest for #{n} failed, expected #{v} got #{onetest(n)}"
-    end
+    a = onetest(n)
+    warn "Selftest for #{n} failed, expected #{v} got #{a} (1)" unless a == v
   end
 end
+
+# target = 0x0dbb_832b # 230392619
+# answer = solve_onetest(target)
 
 test!
