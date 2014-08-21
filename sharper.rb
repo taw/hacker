@@ -2,23 +2,13 @@
 
 def calc(num)
   num1 = 0
-  (0...num).each do |index1|
-    s1 = index1.to_s.size
-    (0...num).each do |index2|
-      s2 = index2.to_s.size
-      (0...num).each do |index3|
-        s3 = index3.to_s.size
-        (0...num).each do |index4|
-          s4 = index4.to_s.size
-          (0...num).each do |index5|
-            s5 = index5.to_s.size
-            num1 += s1 + s2 + s3 + s4 + s5 + 16
-            num1 &= 0xFFFF_FFFF
-          end
-        end
-      end
-    end
+  (0...num).each do |indexn|
+    sn = indexn.to_s.size
+    num1 += sn * (num**4) * 5
   end
+  num1 += 16 * (num**5)
+  num1 &= 0xFFFF_FFFF
+  num1 = [num1].pack("V").unpack("l")[0]
   num1
 end
 
