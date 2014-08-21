@@ -16,7 +16,7 @@ def onetest(a)
   # sub    $0x6fe5d5,%edx
   a -= 0x006f_e5d5
   # xor    $0x2eb22189,%edx
-  a ^= 0x2eb22189
+  a ^= 0x2eb2_2189
   # imul   $0x1534162,%edx,%edx
   a *= 0x0153_4162
   # xor    $0x69f6bc7,%edx
@@ -45,3 +45,15 @@ end
 # answer = solve_onetest(target)
 
 test!
+
+# Reversing:
+# xor
+#   0x00b2_4e8ec
+# imul
+#   0xdb04_4956 or 0x5b04_4956
+# xor
+#   0xf5b6_68df or 0x75b6_68df
+# sub
+#   0xf626_4eb4 or 0x7626_4eb4
+
+p onetest(0x7626_4eb4)
