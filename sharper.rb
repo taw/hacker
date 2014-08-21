@@ -3,12 +3,16 @@
 def calc(num)
   num1 = 0
   (0...num).each do |index1|
+    s1 = index1.to_s.size
     (0...num).each do |index2|
+      s2 = index2.to_s.size
       (0...num).each do |index3|
+        s3 = index3.to_s.size
         (0...num).each do |index4|
+          s4 = index4.to_s.size
           (0...num).each do |index5|
-            str = "#{index1} to #{index2} to #{index3} to #{index4} to #{index5}"
-            num1 += str.size
+            s5 = index5.to_s.size
+            num1 += s1 + s2 + s3 + s4 + s5 + 16
             num1 &= 0xFFFF_FFFF
           end
         end
