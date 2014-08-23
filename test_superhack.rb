@@ -82,4 +82,20 @@ class TestSuperhack < Minitest::Test
       output: 'olleh'
     )
   end
+
+  def test_super_quine
+
+    code = cleanup_code(
+      '
+      0s/                  0^3-?\!
+                  /1^1^gp  1+\   !
+        \+1 P*25 ?\?-*74^0   /s0/!
+      '
+    )
+    expected = code.map{|c| c.join + "\n"}.join
+    sh = Superhack.new
+    sh.code = code
+    sh.run!
+    assert_equal expected, sh.output
+  end
 end
