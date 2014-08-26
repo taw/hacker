@@ -87,13 +87,13 @@ end
 
 def group_into_sets
   live_pixels = Set[]
-  x, y, data = PNM.load("cleaned.pnm")
+  x, y, data = PNM.load("cleaned2.pnm")
   data.unpack("C*").each_slice(1024*3).each_with_index do |row, y|
     row.each_slice(3).each_with_index do |px, x|
       next if px == [0, 0, 0]
       if px == [255, 255, 255]
         live_pixels << [x, y, 1]
-      elsif px == [35, 182, 153]
+      elsif px == [35, 182, 153] or px == [112, 189, 170] # Seashore color profile crap...
         live_pixels << [x, y, 0]
       else
         # Cleanup didn't work ?
@@ -146,7 +146,9 @@ def set_distance(a,b)
 end
 
 def merge_nearby_neighbours(a, b)
-  puts "Merging #{a} and #{b} at distance #{set_distance(a, b)}"
+  dist = set_distance(a, b)
+  puts "Merging #{a} and #{b} at distance #{dist}"
+  require 'pry'; binding.pry
   raise unless a[:bit] == b[:bit]
   {
     xmin: [a[:xmin], b[:xmin]].min,
@@ -201,7 +203,7 @@ def follow_the_path(sets)
   }
 end
 
-cleanup! unless Pathname("cleaned.pnm").exist?
+# cleanup! unless Pathname("cleaned.pnm").exist?
 sets = group_into_sets
 save_sets_pic(sets)
 follow_the_path(sets)
