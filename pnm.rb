@@ -13,9 +13,9 @@ module PNM
 
   def self.save(path, x, y, data)
     open(path, 'w') do |fh|
-      fh.puts "P6\n"
-      fh.puts "#{x} #{y}"
-      fh.puhs "255"
+      fh.print "P6\n"
+      fh.print "#{x} #{y}\n"
+      fh.print "255\n"
       fh.print data
     end
   end
