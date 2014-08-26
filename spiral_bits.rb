@@ -145,6 +145,20 @@ def set_distance(a,b)
   }.min
 end
 
+def merge_nearby_neighbours(a, b)
+  puts "Merging #{a} and #{b} at distance #{set_distance(a, b)}"
+  raise unless a[:bit] == b[:bit]
+  {
+    xmin: [a[:xmin], b[:xmin]].min,
+    xmax: [a[:xmax], b[:xmax]].max,
+    ymin: [a[:ymin], b[:ymin]].min,
+    ymax: [a[:ymax], b[:ymax]].max,
+    bit: a[:bit],
+    elems: a[:elems] + b[:elems],
+    size: a[:size] + b[:size],
+  }
+end
+
 def follow_the_path(sets)
   sets = sets.map{|set|
     xs = set.map{|x,_,_| x}
@@ -156,32 +170,38 @@ def follow_the_path(sets)
   result = []
   sets = Set[*sets]
   current = sets.max_by{|set| set[:size]}
+  sets.delete current
 
   while true
-    sets.delete current
     result << current[:bit]
 
-    return if sets.empty?
+    break if sets.empty?
 
     mindist, neighbours = sets.all_min_by{|set|
       set_distance(set, current)
     }
 
-    if neighbours.size > 1
-      #require 'pry'; binding.pry
-      warn "Multiple neighbours: #{neighbours.size} #{current[:elemns]}"
+    neighbours.each do |n|
+      sets.delete n
+    end
+
+    if neighbours.size == 1
+      current = neighbours[0]
+    elsif neighbours.size == 2
+      # This is potentially stupid :-/
+      current = merge_nearby_neighbours(*neighbours)
     end
 
     # puts "Bit #{current[:bit]}, Distance #{mindist}, #{sets.size} left"
-    current = neighbours[0]
   end
 
-  # require 'pry'; binding.pry
+  # Except for a few bad bits, it's almost working :-/
+  File.open("spiral_result.png", "w"){|fh|
+    fh.print result.reverse.join.scan(/.{8}/).map{|u|  u.to_i(2)}.pack("C*")
+  }
 end
 
-cleanup! # unless Pathname("cleaned.pnm").exist?
-
+cleanup! unless Pathname("cleaned.pnm").exist?
 sets = group_into_sets
 save_sets_pic(sets)
 follow_the_path(sets)
-
