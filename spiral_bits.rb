@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
+require "pathname"
 require "pp"
+require_relative "pnm"
 
 def pixel_dist((a,b,c), (d,e,f))
   Math.sqrt((a-b)**2 + (b-e)**2 + (c-f)**2)
@@ -49,18 +51,16 @@ def pixel_map_threshold(px, thr=20)
 end
 
 def read_spiral_pixels
-  open("spiral.pnm") do |fh|
-    @headers = 3.times.map { fh.readline }
-    fh.read.unpack("C*").each_slice(1024*3).map do |row|
-      row.each_slice(3).map do |px|
-        pixel_map_threshold(px)
-      end
+  x, y, data = PNM.load("spiral.pnm")
+  data = data.unpack("C*").each_slice(1024*3).map do |row|
+    row.each_slice(3).map do |px|
+      pixel_map_threshold(px)
     end
   end
-
+  [x, y, data]
 end
 
-pixels = read_spiral_pixels
-puts @headers
-print pixels.map{|row| row.map{|px| px.pack("CCC")}.join}.join
-
+unless Pathname("cleaned.pnm").exist?
+  x, y, pixels = read_spiral_pixels
+  PNM.save("cleaned.pnm", x, y, pixels)
+end
