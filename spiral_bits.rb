@@ -93,7 +93,7 @@ def group_into_sets
       next if px == [0, 0, 0]
       if px == [255, 255, 255]
         live_pixels << [x, y, 1]
-      elsif px == [35, 182, 153] or px == [112, 189, 170] # Seashore color profile crap...
+      elsif px == [35, 182, 153] or px == [112, 189, 170] or px == [140, 186, 170] # WTF Seashore???
         live_pixels << [x, y, 0]
       else
         # Cleanup didn't work ?
@@ -141,7 +141,10 @@ def set_distance(a,b)
   return 1000 if a[:ymin] >= b[:ymax] + 10
   return 1000 if b[:ymin] >= a[:ymax] + 10
   a[:elems].map{|x1,y1,_|
-    b[:elems].map{|x2,y2,_|  (x1-x2)**2 + (y1-y2)**2 }.min
+    b[:elems].map{|x2,y2,_|
+      # (x1-x2)**2 + (y1-y2)**2  #
+      [x1-x2, y1-y2].map(&:abs).max
+    }.min
   }.min
 end
 
@@ -197,6 +200,7 @@ def follow_the_path(sets)
     # puts "Bit #{current[:bit]}, Distance #{mindist}, #{sets.size} left"
   end
 
+  puts "#{result.size} bits of result"
   # Except for a few bad bits, it's almost working :-/
   File.open("spiral_result.png", "w"){|fh|
     fh.print result.reverse.join.scan(/.{8}/).map{|u|  u.to_i(2)}.pack("C*")
